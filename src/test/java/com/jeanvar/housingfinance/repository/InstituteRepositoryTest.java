@@ -19,8 +19,8 @@ class InstituteRepositoryTest {
     @Test
     void crud() {
         Institute institute = new Institute();
-        institute.setInstituteCode("code");
-        institute.setInstituteName("name");
+        institute.setCode("code");
+        institute.setName("name");
 
         institute = instituteRepository.save(institute);
 
@@ -28,6 +28,6 @@ class InstituteRepositoryTest {
         entityManager.clear();
 
         assertThat(instituteRepository.findByInstituteCode("code"))
-            .hasValueSatisfying(s -> assertThat(s.getInstituteName()).isEqualTo("name"));
+            .hasValueSatisfying(s -> assertThat(s.getName()).isEqualTo("name"));
     }
 }

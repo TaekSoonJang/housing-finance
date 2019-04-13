@@ -18,9 +18,9 @@ public class Institute {
     private Long id;
 
     @NaturalId
-    @Column(name = "INSTITUTE_CODE", unique = true)
-    private String instituteCode;
+    @Column(name = "CODE", unique = true)
+    private String code;
 
-    @Column(name = "INSTITUTE_NAME")
-    private String instituteName;
+    @Column(name = "NAME")
+    private String name;
 }

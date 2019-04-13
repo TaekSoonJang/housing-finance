@@ -23,8 +23,8 @@ class SupportAmountRepositoryTest {
     @Test
     void curd() {
         Institute i = new Institute();
-        i.setInstituteCode("c");
-        i.setInstituteName("n");
+        i.setCode("c");
+        i.setName("n");
 
         i = entityManager.persist(i);
 
@@ -46,8 +46,8 @@ class SupportAmountRepositoryTest {
                 assertThat(s.getAmount()).isEqualTo(100);
 
                 Institute institute = s.getInstitute();
-                assertThat(institute.getInstituteCode()).isEqualTo("c");
-                assertThat(institute.getInstituteName()).isEqualTo("n");
+                assertThat(institute.getCode()).isEqualTo("c");
+                assertThat(institute.getName()).isEqualTo("n");
             });
     }
 }
