@@ -27,7 +27,7 @@ class InstituteRepositoryTest {
         entityManager.flush();
         entityManager.clear();
 
-        assertThat(instituteRepository.findByInstituteCode("code"))
+        assertThat(instituteRepository.findByCode("code"))
             .hasValueSatisfying(s -> assertThat(s.getName()).isEqualTo("name"));
     }
 }

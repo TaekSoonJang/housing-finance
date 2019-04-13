@@ -13,7 +13,7 @@ import javax.persistence.*;
 @Table(name = "INSTITUTE")
 public class Institute {
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Setter(AccessLevel.NONE)
     private Long id;
 

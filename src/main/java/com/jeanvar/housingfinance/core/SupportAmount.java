@@ -14,7 +14,7 @@ import java.time.Year;
 @Table(name = "SUPPORT_AMOUNT")
 public class SupportAmount {
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Setter(AccessLevel.NONE)
     private Long id;
 
