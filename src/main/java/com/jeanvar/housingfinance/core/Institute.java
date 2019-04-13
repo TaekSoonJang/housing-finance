@@ -1,5 +1,6 @@
 package com.jeanvar.housingfinance.core;
 
+import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.annotations.NaturalId;
@@ -13,6 +14,7 @@ import javax.persistence.*;
 public class Institute {
     @Id
     @GeneratedValue
+    @Setter(AccessLevel.NONE)
     private Long id;
 
     @NaturalId
