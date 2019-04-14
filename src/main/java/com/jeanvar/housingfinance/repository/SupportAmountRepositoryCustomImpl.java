@@ -59,4 +59,45 @@ public class SupportAmountRepositoryCustomImpl implements SupportAmountRepositor
 
         return yearAndInstitute;
     }
+
+    @Override
+    public HighLowSupportAmount highLowSupportAmount(Institute institute) {
+        Query maxQ = entityManager.createNativeQuery(
+            "SELECT s.year, ROUND(AVG(s.amount)) amt " +
+                "FROM support_amount s " +
+                "WHERE s.institute_id = ?1 " +
+                "GROUP BY s.year " +
+                "ORDER BY amt DESC " +
+                "LIMIT 1"
+        );
+        maxQ.setParameter(1, institute.getId());
+
+        Query minQ = entityManager.createNativeQuery(
+            "SELECT s.year, ROUND(AVG(s.amount)) amt " +
+                "FROM support_amount s " +
+                "WHERE s.institute_id = ?1 " +
+                "GROUP BY s.year " +
+                "ORDER BY amt ASC " +
+                "LIMIT 1"
+        );
+        minQ.setParameter(1, institute.getId());
+
+        List<Object[]> maxRes = maxQ.getResultList();
+        List<Object[]> minRes = minQ.getResultList();
+
+        HighLowSupportAmount highLowSupportAmount = new HighLowSupportAmount();
+        highLowSupportAmount.setInstitute(institute);
+
+        YearAndAmount max = new YearAndAmount();
+        max.setYear(Year.of((short) maxRes.get(0)[0]));
+        max.setAmount(ObjUtil.toInt(maxRes.get(0)[1]));
+        highLowSupportAmount.setHigh(max);
+
+        YearAndAmount min = new YearAndAmount();
+        min.setYear(Year.of((short) minRes.get(0)[0]));
+        min.setAmount(ObjUtil.toInt(minRes.get(0)[1]));
+        highLowSupportAmount.setLow(min);
+
+        return highLowSupportAmount;
+    }
 }

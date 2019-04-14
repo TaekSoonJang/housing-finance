@@ -140,4 +140,41 @@ class SupportAmountRepositoryTest {
         assertThat(yearAndInstitute.getYear()).isEqualTo(Year.of(2017));
         assertThat(yearAndInstitute.getInstituteName()).isEqualTo("nn2");
     }
+
+    @Test
+    void highLowSupportAmount() {
+        val s1 = new SupportAmount();
+        s1.setInstitute(i1);
+        s1.setYear(Year.of(2018));
+        s1.setMonth(Month.of(1));
+        s1.setAmount(1);
+
+        val s2 = new SupportAmount();
+        s2.setInstitute(i1);
+        s2.setYear(Year.of(2018));
+        s2.setMonth(Month.of(2));
+        s2.setAmount(1);
+
+        val s3 = new SupportAmount();
+        s3.setInstitute(i1);
+        s3.setYear(Year.of(2017));
+        s3.setMonth(Month.of(1));
+        s3.setAmount(2);
+
+        val s4 = new SupportAmount();
+        s4.setInstitute(i1);
+        s4.setYear(Year.of(2017));
+        s4.setMonth(Month.of(2));
+        s4.setAmount(2);
+
+        supportAmountRepository.saveAll(Arrays.asList(s1, s2, s3, s4));
+
+        HighLowSupportAmount highLowSupportAmount = supportAmountRepository.highLowSupportAmount(i1);
+
+        assertThat(highLowSupportAmount.getHigh().getYear()).isEqualTo(Year.of(2017));
+        assertThat(highLowSupportAmount.getHigh().getAmount()).isEqualTo(2);
+
+        assertThat(highLowSupportAmount.getLow().getYear()).isEqualTo(Year.of(2018));
+        assertThat(highLowSupportAmount.getLow().getAmount()).isEqualTo(1);
+    }
 }
