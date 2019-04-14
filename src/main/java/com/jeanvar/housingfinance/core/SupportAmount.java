@@ -13,7 +13,13 @@ import java.time.Year;
 @Setter
 @ToString
 @Entity
-@Table(name = "SUPPORT_AMOUNT")
+@Table(
+    name = "SUPPORT_AMOUNT",
+    uniqueConstraints = @UniqueConstraint(
+        name = "UNIQUE_AMOUNT_PER_YEAR_AND_MONTH_AND_INSTITUTE",
+        columnNames = {"YEAR", "MONTH", "INSTITUTE_ID"}
+    )
+)
 public class SupportAmount {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
