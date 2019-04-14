@@ -1,5 +1,7 @@
 package com.jeanvar.housingfinance.service;
 
+import com.jeanvar.housingfinance.exception.InvalidTokenException;
+import com.jeanvar.housingfinance.exception.TokenExpiredException;
 import com.jeanvar.housingfinance.properties.SecurityProperties;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
@@ -14,11 +16,12 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import javax.crypto.SecretKey;
 
-import java.sql.Date;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
+import java.util.Date;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
@@ -55,6 +58,7 @@ class JWTAuthServiceTest {
         Claims claims = mock(Claims.class);
 
         when(claims.getSubject()).thenReturn("userId");
+        when(claims.getExpiration()).thenReturn(Date.from(Instant.now().plus(1, ChronoUnit.HOURS)));
         doReturn(claims).when(authService).getClaimsFromJWS("token");
         doReturn("newToken").when(authService).createToken("userId");
 
@@ -64,11 +68,40 @@ class JWTAuthServiceTest {
     }
 
     @Test
-    void getUserIdFromToken() {
+    void refreshToken_expired() {
+        authService = spy(authService);
+
+        Claims claims = mock(Claims.class);
+        doReturn(claims).when(authService).getClaimsFromJWS("token");
+        when(claims.getExpiration()).thenReturn(Date.from(Instant.now().minus(1, ChronoUnit.HOURS)));
+
+        assertThatExceptionOfType(TokenExpiredException.class).isThrownBy(() -> authService.refreshToken("token"));
+    }
+
+    @Test
+    void getClaimsFromJWS() {
         when(securityProperties.getSecret()).thenReturn(secretKey);
 
         Claims claims = authService.getClaimsFromJWS(authService.createToken("userId"));
 
         assertThat(claims.getSubject()).isEqualTo("userId");
+    }
+
+    @Test
+    void isValidToken() {
+        authService = spy(authService);
+
+        Claims claims = mock(Claims.class);
+        doReturn(claims).when(authService).getClaimsFromJWS("token");
+
+        Date expired = Date.from(Instant.now().minus(1, ChronoUnit.HOURS));
+        Date validTime = Date.from(Instant.now().plus(1, ChronoUnit.HOURS));
+
+        when(claims.getExpiration())
+            .thenReturn(expired)
+            .thenReturn(validTime);
+
+        assertThat(authService.isValidToken("token")).isFalse();
+        assertThat(authService.isValidToken("token")).isTrue();
     }
 }

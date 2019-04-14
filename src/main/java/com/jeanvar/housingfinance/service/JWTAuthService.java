@@ -1,7 +1,10 @@
 package com.jeanvar.housingfinance.service;
 
+import com.jeanvar.housingfinance.exception.InvalidTokenException;
+import com.jeanvar.housingfinance.exception.TokenExpiredException;
 import com.jeanvar.housingfinance.properties.SecurityProperties;
 import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.Jwts;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -28,13 +31,36 @@ public class JWTAuthService implements AuthService {
     public String refreshToken(String token) {
         Claims claims = getClaimsFromJWS(token);
 
+        if (isTokenExpired(claims)) {
+            throw new TokenExpiredException(token);
+        }
+
         return createToken(claims.getSubject());
     }
 
-    public Claims getClaimsFromJWS(String token) {
-        return Jwts.parser()
-            .setSigningKey(securityProperties.getSecret())
-            .parseClaimsJws(token)
-            .getBody();
+    @Override
+    public boolean isValidToken(String token) {
+        Claims claims = getClaimsFromJWS(token);
+        // At this point, token is trustworthy.
+        return !isTokenExpired(claims);
+    }
+
+    private boolean isTokenExpired(Claims claims) {
+        if (claims.getExpiration().before(new Date())) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    Claims getClaimsFromJWS(String token) {
+        try {
+            return Jwts.parser()
+                .setSigningKey(securityProperties.getSecret())
+                .parseClaimsJws(token)
+                .getBody();
+        } catch (JwtException e) {
+            throw new InvalidTokenException(token);
+        }
     }
 }
