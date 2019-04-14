@@ -24,7 +24,6 @@ public class SupportAmount {
     private Year year;
 
     @Column(name = "MONTH", columnDefinition = "SMALLINT")
-    @Enumerated
     private Month month;
 
     @ManyToOne
