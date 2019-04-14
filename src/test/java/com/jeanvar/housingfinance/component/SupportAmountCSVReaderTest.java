@@ -18,6 +18,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 class SupportAmountCSVReaderTest {
@@ -47,6 +48,7 @@ class SupportAmountCSVReaderTest {
     @Test
     void read() {
         SupportAmountCSVReader reader = SupportAmountCSVReader.from(testCSV);
+        reader.setInstituteRepository(instituteRepository);
 
         val i1 = new Institute();
         i1.setCode("c1");
@@ -56,7 +58,8 @@ class SupportAmountCSVReaderTest {
         i2.setCode("c2");
         i2.setName("d은행");
 
-        List<SupportAmount> ret = reader.read(Arrays.asList(i1, i2));
+        when(instituteRepository.findAll()).thenReturn(Arrays.asList(i1, i2));
+        List<SupportAmount> ret = reader.read();
 
         assertThat(ret).hasSize(4);
         assertThat(ret.get(0)).satisfies(s -> {

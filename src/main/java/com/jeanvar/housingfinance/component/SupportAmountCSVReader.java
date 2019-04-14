@@ -2,7 +2,9 @@ package com.jeanvar.housingfinance.component;
 
 import com.jeanvar.housingfinance.core.Institute;
 import com.jeanvar.housingfinance.core.SupportAmount;
+import com.jeanvar.housingfinance.repository.InstituteRepository;
 import com.opencsv.CSVReader;
+import lombok.Setter;
 
 import java.io.File;
 import java.io.FileReader;
@@ -15,6 +17,9 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 
 public class SupportAmountCSVReader {
+    @Setter
+    private InstituteRepository instituteRepository;
+
     private Map<String, Integer> instituteColumnMap;
     private CSVReader csvReader;
     private boolean canRead;
@@ -60,8 +65,9 @@ public class SupportAmountCSVReader {
                 .collect(Collectors.toList());
     }
 
-    public List<SupportAmount> read(List<Institute> availableInstitutes) {
-        Map<String, Institute> availableInstNameMap = availableInstitutes
+    public List<SupportAmount> read() {
+
+        Map<String, Institute> availableInstNameMap = instituteRepository.findAll()
                 .stream()
                 .collect(Collectors.toMap(
                         Institute::getName,
