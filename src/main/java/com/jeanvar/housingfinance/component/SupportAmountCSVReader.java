@@ -1,4 +1,4 @@
-package com.jeanvar.housingfinance.util;
+package com.jeanvar.housingfinance.component;
 
 import com.jeanvar.housingfinance.core.Institute;
 import com.jeanvar.housingfinance.core.SupportAmount;
@@ -17,6 +17,7 @@ import java.util.stream.Collectors;
 public class SupportAmountCSVReader {
     private Map<String, Integer> instituteColumnMap;
     private CSVReader csvReader;
+    private boolean canRead;
 
     private SupportAmountCSVReader() {}
 
@@ -40,6 +41,7 @@ public class SupportAmountCSVReader {
             SupportAmountCSVReader supportAmountCSVReader = new SupportAmountCSVReader();
             supportAmountCSVReader.csvReader = csvReader;
             supportAmountCSVReader.instituteColumnMap = instituteColumnMap;
+            supportAmountCSVReader.canRead = true;
 
             return supportAmountCSVReader;
         } catch (IOException e) {
@@ -59,7 +61,8 @@ public class SupportAmountCSVReader {
     }
 
     public List<SupportAmount> read(List<Institute> availableInstitutes) {
-        Map<String, Institute> availableInstNameMap = availableInstitutes.stream()
+        Map<String, Institute> availableInstNameMap = availableInstitutes
+                .stream()
                 .collect(Collectors.toMap(
                         Institute::getName,
                         Function.identity()
@@ -70,7 +73,7 @@ public class SupportAmountCSVReader {
             try {
                 String[] row = csvReader.readNext();
                 if (row == null) {
-                    return ret;
+                    break;
                 }
 
                 Year year = Year.of(Integer.parseInt(row[0]));
@@ -98,6 +101,17 @@ public class SupportAmountCSVReader {
                 throw new RuntimeException(e);
             }
         }
+
+        try {
+            this.csvReader.close();
+            this.canRead = false;
+        } catch (IOException e) {
+            e.printStackTrace();
+
+            throw new RuntimeException(e);
+        }
+
+        return ret;
     }
 
     public int getNumOfInstitutes() {
@@ -110,5 +124,9 @@ public class SupportAmountCSVReader {
 
     public Map<String, Integer> getInstituteColumnMap() {
         return instituteColumnMap;
+    }
+
+    public boolean canRead() {
+        return this.canRead;
     }
 }

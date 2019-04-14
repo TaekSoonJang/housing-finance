@@ -1,10 +1,14 @@
-package com.jeanvar.housingfinance.util;
+package com.jeanvar.housingfinance.component;
 
 import com.jeanvar.housingfinance.core.Institute;
 import com.jeanvar.housingfinance.core.SupportAmount;
+import com.jeanvar.housingfinance.repository.InstituteRepository;
 import lombok.val;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -15,8 +19,12 @@ import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+@ExtendWith(MockitoExtension.class)
 class SupportAmountCSVReaderTest {
     URI testCSV;
+
+    @Mock
+    InstituteRepository instituteRepository;
 
     @BeforeEach
     void setUp() throws URISyntaxException {
@@ -48,8 +56,7 @@ class SupportAmountCSVReaderTest {
         i2.setCode("c2");
         i2.setName("d은행");
 
-        List<Institute> institutes = Arrays.asList(i1, i2);
-        List<SupportAmount> ret = reader.read(institutes);
+        List<SupportAmount> ret = reader.read(Arrays.asList(i1, i2));
 
         assertThat(ret).hasSize(4);
         assertThat(ret.get(0)).satisfies(s -> {
@@ -64,5 +71,6 @@ class SupportAmountCSVReaderTest {
             assertThat(s.getMonth()).isEqualTo(Month.of(2));
             assertThat(s.getAmount()).isEqualTo(5);
         });
+        assertThat(reader.canRead()).isFalse();
     }
 }
