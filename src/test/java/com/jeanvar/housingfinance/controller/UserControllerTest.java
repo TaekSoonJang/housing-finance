@@ -1,5 +1,6 @@
 package com.jeanvar.housingfinance.controller;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.jeanvar.housingfinance.service.UserDTO;
 import com.jeanvar.housingfinance.service.UserService;
@@ -54,5 +55,25 @@ class UserControllerTest {
             .andExpect(jsonPath("$.token").value("token"));
 
         verify(userService, times(1)).saveUser(any(UserDTO.class));
+    }
+
+    @Test
+    void signin() throws Exception {
+        String userId = "user";
+        String password = "password";
+
+        Map<String, String> body = new HashMap<>();
+        body.put("userId", userId);
+        body.put("password", password);
+
+        when(userService.checkUserAndReturnJWS(any())).thenReturn("token");
+
+        mockMvc.perform(
+            post("/api/v1/user/signin")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(body))
+            )
+            .andExpect(status().isOk())
+            .andExpect(jsonPath("$.token").value("token"));
     }
 }

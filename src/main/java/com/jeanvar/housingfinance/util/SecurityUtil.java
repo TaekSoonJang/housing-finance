@@ -29,4 +29,8 @@ public class SecurityUtil {
             return false;
         }
     }
+
+    public static String generatePassword(String plainPassword) {
+        return BCrypt.hashpw(plainPassword, BCrypt.gensalt());
+    }
 }

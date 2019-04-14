@@ -64,6 +64,7 @@ class UserServiceImplTest {
         String userId = "user";
 
         UserDTO userDTO = UserDTO.create(userId, "password");
+        userDTO.generateEncryptedPassword();
 
         User user = new User();
         user.setUserId(userId);

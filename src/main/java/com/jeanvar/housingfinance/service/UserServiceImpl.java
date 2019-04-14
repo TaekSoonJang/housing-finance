@@ -21,6 +21,8 @@ public class UserServiceImpl implements UserService {
             throw new IllegalArgumentException(userDTO.getUserId() + " already exists.");
         }
 
+        userDTO.generateEncryptedPassword();
+
         User user = new User();
         user.setUserId(userDTO.getUserId());
         user.setPassword(userDTO.getEncryptedPassword());

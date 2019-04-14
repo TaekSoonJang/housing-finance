@@ -1,8 +1,8 @@
 package com.jeanvar.housingfinance.service;
 
+import com.jeanvar.housingfinance.util.SecurityUtil;
 import lombok.Getter;
 import lombok.Setter;
-import org.mindrot.jbcrypt.BCrypt;
 
 @Getter
 public class UserDTO {
@@ -18,8 +18,11 @@ public class UserDTO {
         UserDTO userDTO = new UserDTO();
         userDTO.userId = userId;
         userDTO.plainPassword = password;
-        userDTO.encryptedPassword = BCrypt.hashpw(password, BCrypt.gensalt());
 
         return userDTO;
+    }
+
+    public void generateEncryptedPassword() {
+        this.encryptedPassword = SecurityUtil.generatePassword(this.plainPassword);
     }
 }

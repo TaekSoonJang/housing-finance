@@ -5,6 +5,6 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public class SignupResponse {
+public class SigninResponse {
     String token;
 }

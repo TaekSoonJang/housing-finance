@@ -1,7 +1,7 @@
 package com.jeanvar.housingfinance.controller;
 
-import com.jeanvar.housingfinance.controller.request.UserSignupRequest;
-import com.jeanvar.housingfinance.controller.response.SignupResponse;
+import com.jeanvar.housingfinance.controller.request.UserSigninRequest;
+import com.jeanvar.housingfinance.controller.response.SigninResponse;
 import com.jeanvar.housingfinance.service.UserDTO;
 import com.jeanvar.housingfinance.service.UserService;
 import lombok.AllArgsConstructor;
@@ -20,13 +20,30 @@ public class UserController {
         value = "/signup",
         method = RequestMethod.POST
     )
-    public SignupResponse signup(
-        @RequestBody UserSignupRequest body
+    public SigninResponse signup(
+        @RequestBody UserSigninRequest body
     ) {
         UserDTO userDTO = userService.saveUser(UserDTO.create(body.getUserId(), body.getPassword()));
 
-        SignupResponse res = new SignupResponse();
+        SigninResponse res = new SigninResponse();
         res.setToken(userDTO.getJws());
+
+        return res;
+    }
+
+    @RequestMapping(
+        value = "/signin",
+        method = RequestMethod.POST
+    )
+    public SigninResponse signin(
+        @RequestBody UserSigninRequest body
+    ) {
+        UserDTO userDTO = UserDTO.create(body.getUserId(), body.getPassword());
+
+        String token = userService.checkUserAndReturnJWS(userDTO);
+
+        SigninResponse res = new SigninResponse();
+        res.setToken(token);
 
         return res;
     }
