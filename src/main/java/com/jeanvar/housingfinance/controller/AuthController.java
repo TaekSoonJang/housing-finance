@@ -1,4 +1,4 @@
-package com.jeanvar.housingfinance;
+package com.jeanvar.housingfinance.controller;
 
 import com.jeanvar.housingfinance.controller.response.SigninResponse;
 import com.jeanvar.housingfinance.service.AuthService;
