@@ -4,6 +4,8 @@ import com.jeanvar.housingfinance.component.SupportAmountCSVReader;
 import com.jeanvar.housingfinance.component.SupportAmountCSVReaderFactory;
 import com.jeanvar.housingfinance.core.Institute;
 import com.jeanvar.housingfinance.core.SupportAmount;
+import com.jeanvar.housingfinance.repository.HighLowSupportAmount;
+import com.jeanvar.housingfinance.repository.InstituteRepository;
 import com.jeanvar.housingfinance.repository.SupportAmountRepository;
 import com.jeanvar.housingfinance.repository.YearAndInstitute;
 import lombok.AllArgsConstructor;
@@ -13,6 +15,7 @@ import javax.transaction.Transactional;
 import java.time.Year;
 import java.util.List;
 import java.util.Map;
+import java.util.NoSuchElementException;
 import java.util.stream.Collectors;
 
 @Service
@@ -20,6 +23,7 @@ import java.util.stream.Collectors;
 public class SupportAmountService {
     private SupportAmountCSVReaderFactory supportAmountCSVReaderFactory;
     private SupportAmountRepository supportAmountRepository;
+    private InstituteRepository instituteRepository;
 
     @Transactional
     public InsertSupportAmountInfo insertSupportAmountFromCSV(String pathToCSV) {
@@ -56,5 +60,11 @@ public class SupportAmountService {
 
     public YearAndInstitute getHighestAmountOfYearAndInstitute() {
         return supportAmountRepository.highestAmountYearAndInstitute();
+    }
+
+    public HighLowSupportAmount getHighLowSupportAmount(String instituteCode) {
+        return instituteRepository.findByCode(instituteCode)
+            .map(supportAmountRepository::highLowSupportAmount)
+            .orElseThrow(() -> new NoSuchElementException(instituteCode));
     }
 }

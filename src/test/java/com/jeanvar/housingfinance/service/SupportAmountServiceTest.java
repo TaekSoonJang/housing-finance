@@ -4,6 +4,8 @@ import com.jeanvar.housingfinance.component.SupportAmountCSVReader;
 import com.jeanvar.housingfinance.component.SupportAmountCSVReaderFactory;
 import com.jeanvar.housingfinance.core.Institute;
 import com.jeanvar.housingfinance.core.SupportAmount;
+import com.jeanvar.housingfinance.repository.HighLowSupportAmount;
+import com.jeanvar.housingfinance.repository.InstituteRepository;
 import com.jeanvar.housingfinance.repository.SupportAmountRepository;
 import lombok.val;
 import org.junit.jupiter.api.Test;
@@ -16,6 +18,7 @@ import java.time.Year;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.*;
@@ -29,6 +32,8 @@ class SupportAmountServiceTest {
     SupportAmountCSVReaderFactory supportAmountCSVReaderFactory;
     @Mock
     SupportAmountRepository supportAmountRepository;
+    @Mock
+    InstituteRepository instituteRepository;
     @Mock
     SupportAmountCSVReader supportAmountCSVReader;
 
@@ -70,5 +75,18 @@ class SupportAmountServiceTest {
         SupportAmountYearlySummary summary = supportAmountService.getYearlySummary();
 
         assertThat(summary.getYearlySum()).containsEntry(Year.of(2018), 2);
+    }
+
+    @Test
+    void highLowSupportAmount() {
+        Institute i = new Institute();
+        when(instituteRepository.findByCode("code")).thenReturn(Optional.of(i));
+
+        HighLowSupportAmount highLowSupportAmount = new HighLowSupportAmount();
+        when(supportAmountRepository.highLowSupportAmount(i)).thenReturn(highLowSupportAmount);
+
+        HighLowSupportAmount found = supportAmountService.getHighLowSupportAmount("code");
+
+        assertThat(found).isEqualTo(highLowSupportAmount);
     }
 }
