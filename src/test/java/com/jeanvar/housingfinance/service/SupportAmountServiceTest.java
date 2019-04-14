@@ -35,8 +35,10 @@ class SupportAmountServiceTest {
 
         val s1 = new SupportAmount();
         val s2 = new SupportAmount();
+
         when(supportAmountCSVReader.read()).thenReturn(Arrays.asList(s1, s2));
         when(supportAmountCSVReader.getInstituteNames()).thenReturn(Arrays.asList("i1", "i2"));
+        when(supportAmountRepository.saveAll(any())).thenAnswer(i -> i.getArgument(0));
 
         InsertSupportAmountInfo info = supportAmountService.insertSupportAmountFromCSV(path);
 
