@@ -21,6 +21,6 @@ public class Institute {
     @Column(name = "CODE", unique = true)
     private String code;
 
-    @Column(name = "NAME")
+    @Column(name = "NAME", unique = true)
     private String name;
 }

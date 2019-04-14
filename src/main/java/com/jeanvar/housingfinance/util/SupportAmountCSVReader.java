@@ -6,9 +6,14 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 import java.net.URI;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.stream.Collectors;
 
 public class SupportAmountCSVReader {
     private int numOfInstitutes;
+    private List<String> instituteNames;
     private CSVReader csvReader;
 
     private SupportAmountCSVReader() {}
@@ -18,17 +23,18 @@ public class SupportAmountCSVReader {
             CSVReader csvReader = new CSVReader(new FileReader(new File(csvURI)));
             String[] header = csvReader.readNext();
 
-            int numOfInstitutes = 0;
+            List<String> instituteNames = new ArrayList<>();
             // The first column is year and the second column is month
             for (int i = 2; i < header.length; i++) {
                 if (header[i] != null && !header[i].isEmpty()) {
-                    numOfInstitutes += 1;
+                    instituteNames.addAll(extractInstituteNames(header[i]));
                 }
             }
 
             SupportAmountCSVReader supportAmountCSVReader = new SupportAmountCSVReader();
             supportAmountCSVReader.csvReader = csvReader;
-            supportAmountCSVReader.numOfInstitutes = numOfInstitutes;
+            supportAmountCSVReader.numOfInstitutes = instituteNames.size();
+            supportAmountCSVReader.instituteNames = instituteNames;
 
             return supportAmountCSVReader;
         } catch (IOException e) {
@@ -38,7 +44,20 @@ public class SupportAmountCSVReader {
         }
     }
 
+    private static List<String> extractInstituteNames(String s) {
+        s = s.replace("(억원)", "").trim();
+        String[] tokens = s.split("/");
+
+        return Arrays.stream(tokens)
+                .map(String::trim)
+                .collect(Collectors.toList());
+    }
+
     public int getNumOfInstitutes() {
         return this.numOfInstitutes;
+    }
+
+    public List<String> getInstituteNames() {
+        return this.instituteNames;
     }
 }
