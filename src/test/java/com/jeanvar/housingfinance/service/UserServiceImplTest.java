@@ -1,6 +1,7 @@
 package com.jeanvar.housingfinance.service;
 
 import com.jeanvar.housingfinance.core.User;
+import com.jeanvar.housingfinance.exception.WrongUserException;
 import com.jeanvar.housingfinance.repository.UserRepository;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -10,7 +11,10 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import java.util.Optional;
+
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.times;
@@ -53,5 +57,38 @@ class UserServiceImplTest {
         assertThatIllegalArgumentException().isThrownBy(() ->
             userService.saveUser(UserDTO.create("u","p"))
         );
+    }
+
+    @Test
+    void checkUserAndReturnJWS_valid() {
+        String userId = "user";
+
+        UserDTO userDTO = UserDTO.create(userId, "password");
+
+        User user = new User();
+        user.setUserId(userId);
+        user.setPassword(userDTO.getEncryptedPassword());
+
+        when(userRepository.findByUserId(userId)).thenReturn(Optional.of(user));
+        when(authService.createJWT(userId)).thenReturn("token");
+
+        String jws = userService.checkUserAndReturnJWS(userDTO);
+
+        assertThat(jws).isEqualTo("token");
+    }
+
+    @Test
+    void checkUserAndReturnJWS_invalid() {
+        String userId = "user";
+
+        UserDTO userDTO = UserDTO.create(userId, "password");
+
+        User user = new User();
+        user.setUserId(userId);
+        user.setPassword("wrong password");
+
+        when(userRepository.findByUserId(userId)).thenReturn(Optional.of(user));
+
+        assertThatExceptionOfType(WrongUserException.class).isThrownBy(() -> userService.checkUserAndReturnJWS(userDTO));
     }
 }

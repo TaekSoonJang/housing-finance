@@ -3,6 +3,7 @@ package com.jeanvar.housingfinance.service;
 import com.jeanvar.housingfinance.properties.SecurityProperties;
 import io.jsonwebtoken.Jwts;
 import lombok.AllArgsConstructor;
+import org.mindrot.jbcrypt.BCrypt;
 import org.springframework.stereotype.Service;
 
 import java.time.Instant;

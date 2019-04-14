@@ -1,7 +1,9 @@
 package com.jeanvar.housingfinance.service;
 
 import com.jeanvar.housingfinance.core.User;
+import com.jeanvar.housingfinance.exception.WrongUserException;
 import com.jeanvar.housingfinance.repository.UserRepository;
+import com.jeanvar.housingfinance.util.SecurityUtil;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -29,5 +31,14 @@ public class UserServiceImpl implements UserService {
         userDTO.setJws(jws);
 
         return userDTO;
+    }
+
+    @Override
+    public String checkUserAndReturnJWS(UserDTO userDTO) {
+        User user = userRepository.findByUserId(userDTO.getUserId())
+            .filter(u -> SecurityUtil.checkPassword(userDTO.getPlainPassword(), u.getPassword()))
+            .orElseThrow(() -> new WrongUserException("Wrong user info."));
+
+        return authService.createJWT(user.getUserId());
     }
 }
