@@ -4,6 +4,8 @@ import com.jeanvar.housingfinance.core.Institute;
 import com.jeanvar.housingfinance.core.SupportAmount;
 import com.jeanvar.housingfinance.repository.InstituteRepository;
 import com.opencsv.CSVReader;
+import lombok.AccessLevel;
+import lombok.Getter;
 import lombok.Setter;
 
 import java.io.File;
@@ -18,6 +20,7 @@ import java.util.stream.Collectors;
 
 public class SupportAmountCSVReader {
     @Setter
+    @Getter(AccessLevel.PACKAGE)
     private InstituteRepository instituteRepository;
 
     private Map<String, Integer> instituteColumnMap;
