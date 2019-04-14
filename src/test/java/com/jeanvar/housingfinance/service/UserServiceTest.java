@@ -18,7 +18,7 @@ import static org.mockito.Mockito.when;
 @ExtendWith(MockitoExtension.class)
 class UserServiceTest {
     @InjectMocks
-    UserService userService;
+    UserServiceImpl userService;
 
     @Mock
     UserRepository userRepository;
