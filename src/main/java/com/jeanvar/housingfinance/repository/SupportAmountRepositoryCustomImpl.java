@@ -18,8 +18,7 @@ public class SupportAmountRepositoryCustomImpl implements SupportAmountRepositor
     @Override
     public Map<Year, Map<Institute, Integer>> yearlySummary() {
         Query q = entityManager.createQuery(
-            "SELECT " +
-                "s.year, s.institute, SUM(s.amount) " +
+            "SELECT s.year, s.institute, SUM(s.amount) " +
             "FROM SupportAmount s " +
             "GROUP BY s.year, s.institute"
         );
@@ -40,5 +39,24 @@ public class SupportAmountRepositoryCustomImpl implements SupportAmountRepositor
         }
 
         return ret;
+    }
+
+    @Override
+    public YearAndInstitute highestAmountYearAndInstitute() {
+        Query q = entityManager.createNativeQuery(
+            "SELECT s.year, i.name, SUM(s.amount) sum_amount " +
+            "FROM support_amount s " +
+            "JOIN institute i ON i.id = s.institute_id " +
+            "GROUP BY s.year, s.institute_id " +
+            "ORDER BY sum_amount DESC " +
+            "LIMIT 1"
+        );
+        List<Object[]> res = q.getResultList();
+
+        YearAndInstitute yearAndInstitute = new YearAndInstitute();
+        yearAndInstitute.setYear(Year.of((short) res.get(0)[0]));
+        yearAndInstitute.setInstituteName((String) res.get(0)[1]);
+
+        return yearAndInstitute;
     }
 }

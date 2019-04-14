@@ -7,4 +7,5 @@ import java.util.Map;
 
 public interface SupportAmountRepositoryCustom {
     Map<Year, Map<Institute, Integer>> yearlySummary();
+    YearAndInstitute highestAmountYearAndInstitute();
 }
