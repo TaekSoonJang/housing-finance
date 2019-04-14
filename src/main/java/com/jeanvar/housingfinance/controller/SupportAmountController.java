@@ -1,8 +1,11 @@
 package com.jeanvar.housingfinance.controller;
 
+import com.jeanvar.housingfinance.controller.response.MinMaxAverageAmountResponse;
 import com.jeanvar.housingfinance.controller.response.SupportAmountSummaryResponse;
 import com.jeanvar.housingfinance.controller.response.SupportAmountYearySummaryResponse;
 import com.jeanvar.housingfinance.controller.response.TopAmountYearAndInstituteResponse;
+import com.jeanvar.housingfinance.repository.HighLowSupportAmount;
+import com.jeanvar.housingfinance.repository.YearAndAmount;
 import com.jeanvar.housingfinance.repository.YearAndInstitute;
 import com.jeanvar.housingfinance.service.InsertSupportAmountInfo;
 import com.jeanvar.housingfinance.service.SupportAmountService;
@@ -17,6 +20,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.File;
 import java.io.IOException;
 import java.time.Instant;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -91,6 +95,26 @@ public class SupportAmountController {
         TopAmountYearAndInstituteResponse res = new TopAmountYearAndInstituteResponse();
         res.setYear(yearAndInstitute.getYear().getValue());
         res.setBank(yearAndInstitute.getInstituteName());
+
+        return res;
+    }
+
+    @RequestMapping(
+        value = "/minmax-avg",
+        method = RequestMethod.GET
+    )
+    public MinMaxAverageAmountResponse minMaxAverageAmountResponse(
+        @RequestParam String instituteCode
+    ) {
+        HighLowSupportAmount highLowSupportAmount = supportAmountService.getHighLowSupportAmount(instituteCode);
+
+        MinMaxAverageAmountResponse res = new MinMaxAverageAmountResponse();
+        res.setBank(highLowSupportAmount.getInstitute().getName());
+
+        res.setSupportAmount(Arrays.asList(
+            highLowSupportAmount.getLow(),
+            highLowSupportAmount.getHigh()
+        ));
 
         return res;
     }

@@ -1,6 +1,8 @@
 package com.jeanvar.housingfinance.controller;
 
 import com.jeanvar.housingfinance.core.Institute;
+import com.jeanvar.housingfinance.repository.HighLowSupportAmount;
+import com.jeanvar.housingfinance.repository.YearAndAmount;
 import com.jeanvar.housingfinance.service.SupportAmountService;
 import com.jeanvar.housingfinance.service.SupportAmountYearlySummary;
 import lombok.val;
@@ -95,5 +97,36 @@ class SupportAmountControllerTest {
             .andExpect(
                 jsonPath("$.support_amount[0].detail_amount.a").value(1)
             );
+    }
+
+    @Test
+    void minmaxAverage() throws Exception {
+        val i = new Institute();
+        i.setName("bank");
+
+        HighLowSupportAmount highLowSupportAmount = new HighLowSupportAmount();
+        highLowSupportAmount.setInstitute(i);
+
+        YearAndAmount high = new YearAndAmount();
+        high.setYear(Year.of(2017));
+        high.setAmount(2);
+        highLowSupportAmount.setHigh(high);
+
+        YearAndAmount low = new YearAndAmount();
+        low.setYear(Year.of(2018));
+        low.setAmount(1);
+        highLowSupportAmount.setLow(low);
+
+        when(supportAmountService.getHighLowSupportAmount("code")).thenReturn(highLowSupportAmount);
+
+        mockMvc.perform(
+                get("/api/v1/supportamount/minmax-avg").param("instituteCode", "code")
+            )
+            .andExpect(status().isOk())
+            .andExpect(jsonPath("$.bank").value("bank"))
+            .andExpect(jsonPath("$.support_amount[0].year").value(2018))
+            .andExpect(jsonPath("$.support_amount[0].amount").value(1))
+            .andExpect(jsonPath("$.support_amount[1].year").value(2017))
+            .andExpect(jsonPath("$.support_amount[1].amount").value(2));
     }
 }
