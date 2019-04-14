@@ -13,6 +13,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.Arrays;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
@@ -35,9 +36,13 @@ class SupportAmountServiceTest {
         val s1 = new SupportAmount();
         val s2 = new SupportAmount();
         when(supportAmountCSVReader.read()).thenReturn(Arrays.asList(s1, s2));
+        when(supportAmountCSVReader.getInstituteNames()).thenReturn(Arrays.asList("i1", "i2"));
 
-        supportAmountService.insertSupportAmountFromCSV(path);
+        InsertSupportAmountInfo info = supportAmountService.insertSupportAmountFromCSV(path);
 
         verify(supportAmountRepository, times(1)).saveAll(Arrays.asList(s1, s2));
+
+        assertThat(info.getInsertedRows()).isEqualTo(2);
+        assertThat(info.getInstitutes()).containsExactly("i1", "i2");
     }
 }

@@ -7,6 +7,7 @@ import com.jeanvar.housingfinance.repository.SupportAmountRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import javax.transaction.Transactional;
 import java.util.List;
 
 @Service
@@ -15,11 +16,18 @@ public class SupportAmountService {
     private SupportAmountCSVReaderFactory supportAmountCSVReaderFactory;
     private SupportAmountRepository supportAmountRepository;
 
-    public void insertSupportAmountFromCSV(String pathToCSV) {
+    @Transactional
+    public InsertSupportAmountInfo insertSupportAmountFromCSV(String pathToCSV) {
         SupportAmountCSVReader reader = supportAmountCSVReaderFactory.create(pathToCSV);
 
         List<SupportAmount> rows = reader.read();
 
-        supportAmountRepository.saveAll(rows);
+        rows = supportAmountRepository.saveAll(rows);
+
+        InsertSupportAmountInfo info = new InsertSupportAmountInfo();
+        info.setInsertedRows(rows.size());
+        info.setInstitutes(reader.getInstituteNames());
+
+        return info;
     }
 }

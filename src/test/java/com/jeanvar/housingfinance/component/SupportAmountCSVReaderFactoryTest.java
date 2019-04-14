@@ -7,8 +7,6 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import java.net.URISyntaxException;
-
 import static org.assertj.core.api.Assertions.assertThat;
 
 @ExtendWith(MockitoExtension.class)
@@ -20,10 +18,10 @@ class SupportAmountCSVReaderFactoryTest {
     InstituteRepository instituteRepository;
 
     @Test
-    void create() throws URISyntaxException {
+    void create() {
         String path = getClass().getClassLoader().getResource("test.csv").getPath();
 
-        SupportAmountCSVReader reader = supportAmountCSVReaderFactory.create("file:" + path);
+        SupportAmountCSVReader reader = supportAmountCSVReaderFactory.create(path);
 
         assertThat(reader.getInstituteRepository()).isEqualTo(instituteRepository);
     }

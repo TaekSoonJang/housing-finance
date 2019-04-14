@@ -10,8 +10,6 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import java.net.URI;
-import java.net.URISyntaxException;
 import java.time.Month;
 import java.time.Year;
 import java.util.Arrays;
@@ -22,14 +20,14 @@ import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 class SupportAmountCSVReaderTest {
-    URI testCSV;
+    String testCSV;
 
     @Mock
     InstituteRepository instituteRepository;
 
     @BeforeEach
-    void setUp() throws URISyntaxException {
-        testCSV = getClass().getClassLoader().getResource("test.csv").toURI();
+    void setUp() {
+        testCSV = getClass().getClassLoader().getResource("test.csv").getPath();
     }
 
     @Test
@@ -73,6 +71,12 @@ class SupportAmountCSVReaderTest {
             assertThat(s.getYear()).isEqualTo(Year.of(1));
             assertThat(s.getMonth()).isEqualTo(Month.of(2));
             assertThat(s.getAmount()).isEqualTo(5);
+        });
+        assertThat(ret.get(2)).satisfies(s -> {
+            assertThat(s.getInstitute()).isEqualTo(i1);
+            assertThat(s.getYear()).isEqualTo(Year.of(6));
+            assertThat(s.getMonth()).isEqualTo(Month.of(7));
+            assertThat(s.getAmount()).isEqualTo(10000);
         });
         assertThat(reader.canRead()).isFalse();
     }

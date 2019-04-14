@@ -11,7 +11,6 @@ import lombok.Setter;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
-import java.net.URI;
 import java.time.Month;
 import java.time.Year;
 import java.util.*;
@@ -29,9 +28,9 @@ public class SupportAmountCSVReader {
 
     private SupportAmountCSVReader() {}
 
-    public static SupportAmountCSVReader from(URI csvURI) {
+    public static SupportAmountCSVReader from(String pathToCSV) {
         try {
-            CSVReader csvReader = new CSVReader(new FileReader(new File(csvURI)));
+            CSVReader csvReader = new CSVReader(new FileReader(new File(pathToCSV)));
             String[] header = csvReader.readNext();
 
             Map<String, Integer> instituteColumnMap = new LinkedHashMap<>();
@@ -100,7 +99,7 @@ public class SupportAmountCSVReader {
                     supportAmount.setInstitute(availableInstNameMap.get(instName));
                     supportAmount.setYear(year);
                     supportAmount.setMonth(month);
-                    supportAmount.setAmount(Integer.parseInt(row[col]));
+                    supportAmount.setAmount(parseAmount(row[col]));
 
                     ret.add(supportAmount);
                 }
@@ -121,6 +120,10 @@ public class SupportAmountCSVReader {
         }
 
         return ret;
+    }
+
+    private Integer parseAmount(String s) {
+        return Integer.parseInt(s.replace(",", ""));
     }
 
     public int getNumOfInstitutes() {
