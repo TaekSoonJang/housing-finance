@@ -3,12 +3,14 @@ package com.jeanvar.housingfinance.core;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.Setter;
+import lombok.ToString;
 import org.hibernate.annotations.NaturalId;
 
 import javax.persistence.*;
 
 @Getter
 @Setter
+@ToString
 @Entity
 @Table(name = "INSTITUTE")
 public class Institute {

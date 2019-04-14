@@ -3,6 +3,7 @@ package com.jeanvar.housingfinance.core;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.Setter;
+import lombok.ToString;
 
 import javax.persistence.*;
 import java.time.Month;
@@ -10,6 +11,7 @@ import java.time.Year;
 
 @Getter
 @Setter
+@ToString
 @Entity
 @Table(name = "SUPPORT_AMOUNT")
 public class SupportAmount {
