@@ -10,10 +10,11 @@ import org.springframework.transaction.annotation.Transactional;
 @AllArgsConstructor
 public class UserServiceImpl implements UserService {
     private UserRepository userRepository;
+    private AuthService authService;
 
     @Override
     @Transactional
-    public User saveUser(UserDTO userDTO) {
+    public UserDTO saveUser(UserDTO userDTO) {
         if (userRepository.existsByUserId(userDTO.getUserId())) {
             throw new IllegalArgumentException(userDTO.getUserId() + " already exists.");
         }
@@ -22,6 +23,11 @@ public class UserServiceImpl implements UserService {
         user.setUserId(userDTO.getUserId());
         user.setPassword(userDTO.getEncryptedPassword());
 
-        return userRepository.save(user);
+        userRepository.save(user);
+
+        String jws = authService.createJWT(userDTO.getUserId());
+        userDTO.setJws(jws);
+
+        return userDTO;
     }
 }

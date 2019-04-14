@@ -1,6 +1,7 @@
 package com.jeanvar.housingfinance.controller;
 
 import com.jeanvar.housingfinance.controller.request.UserSignupRequest;
+import com.jeanvar.housingfinance.controller.response.SignupResponse;
 import com.jeanvar.housingfinance.service.UserDTO;
 import com.jeanvar.housingfinance.service.UserService;
 import lombok.AllArgsConstructor;
@@ -19,9 +20,14 @@ public class UserController {
         value = "/signup",
         method = RequestMethod.POST
     )
-    public void signup(
+    public SignupResponse signup(
         @RequestBody UserSignupRequest body
     ) {
-        userService.saveUser(UserDTO.create(body.getUserId(), body.getPassword()));
+        UserDTO userDTO = userService.saveUser(UserDTO.create(body.getUserId(), body.getPassword()));
+
+        SignupResponse res = new SignupResponse();
+        res.setToken(userDTO.getJws());
+
+        return res;
     }
 }

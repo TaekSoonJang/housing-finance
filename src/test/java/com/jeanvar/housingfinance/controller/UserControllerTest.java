@@ -15,8 +15,10 @@ import java.util.Map;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 import static org.mockito.internal.verification.VerificationModeFactory.times;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @WebMvcTest(UserController.class)
@@ -31,17 +33,25 @@ class UserControllerTest {
 
     @Test
     void singup() throws Exception {
+        String userId = "user";
+        String password = "password";
+
+        UserDTO dto = UserDTO.create(userId, password);
+        dto.setJws("token");
+
+        when(userService.saveUser(any())).thenReturn(dto);
+
         Map<String, String> body = new HashMap<>();
-        body.put("userId", "user");
-        body.put("password", "password");
+        body.put("userId", userId);
+        body.put("password", password);
 
         mockMvc.perform(
             post("/api/v1/user/signup")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(body))
-        ).andExpect(
-            status().isOk()
-        );
+            )
+            .andExpect(status().isOk())
+            .andExpect(jsonPath("$.token").value("token"));
 
         verify(userService, times(1)).saveUser(any(UserDTO.class));
     }

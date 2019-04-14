@@ -1,6 +1,7 @@
 package com.jeanvar.housingfinance.service;
 
 import lombok.Getter;
+import lombok.Setter;
 import org.mindrot.jbcrypt.BCrypt;
 
 @Getter
@@ -8,6 +9,8 @@ public class UserDTO {
     private String userId;
     private String plainPassword;
     private String encryptedPassword;
+    @Setter
+    private String jws;
 
     private UserDTO() {}
 
