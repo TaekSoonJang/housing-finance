@@ -6,14 +6,11 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 import java.net.URI;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
+import java.util.*;
 import java.util.stream.Collectors;
 
 public class SupportAmountCSVReader {
-    private int numOfInstitutes;
-    private List<String> instituteNames;
+    private Map<String, Integer> instituteColumnMap;
     private CSVReader csvReader;
 
     private SupportAmountCSVReader() {}
@@ -23,18 +20,21 @@ public class SupportAmountCSVReader {
             CSVReader csvReader = new CSVReader(new FileReader(new File(csvURI)));
             String[] header = csvReader.readNext();
 
-            List<String> instituteNames = new ArrayList<>();
+            Map<String, Integer> instituteColumnMap = new LinkedHashMap<>();
             // The first column is year and the second column is month
             for (int i = 2; i < header.length; i++) {
                 if (header[i] != null && !header[i].isEmpty()) {
-                    instituteNames.addAll(extractInstituteNames(header[i]));
+                    List<String> instituteNames = extractInstituteNames(header[i]);
+
+                    for (String instituteName: instituteNames) {
+                        instituteColumnMap.put(instituteName, i);
+                    }
                 }
             }
 
             SupportAmountCSVReader supportAmountCSVReader = new SupportAmountCSVReader();
             supportAmountCSVReader.csvReader = csvReader;
-            supportAmountCSVReader.numOfInstitutes = instituteNames.size();
-            supportAmountCSVReader.instituteNames = instituteNames;
+            supportAmountCSVReader.instituteColumnMap = instituteColumnMap;
 
             return supportAmountCSVReader;
         } catch (IOException e) {
@@ -54,10 +54,14 @@ public class SupportAmountCSVReader {
     }
 
     public int getNumOfInstitutes() {
-        return this.numOfInstitutes;
+        return this.instituteColumnMap.size();
     }
 
     public List<String> getInstituteNames() {
-        return this.instituteNames;
+        return Collections.unmodifiableList(new ArrayList<>(this.instituteColumnMap.keySet()));
+    }
+
+    public Map<String, Integer> getInstituteColumnMap() {
+        return instituteColumnMap;
     }
 }

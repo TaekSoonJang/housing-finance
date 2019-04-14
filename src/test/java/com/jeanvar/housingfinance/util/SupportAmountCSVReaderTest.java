@@ -15,5 +15,10 @@ class SupportAmountCSVReaderTest {
 
         assertThat(reader.getNumOfInstitutes()).isEqualTo(4);
         assertThat(reader.getInstituteNames()).containsExactly("a은행", "b은행", "c은행", "d은행");
+        assertThat(reader.getInstituteColumnMap())
+                .containsEntry("a은행", 2)
+                .containsEntry("b은행", 3)
+                .containsEntry("c은행", 4)
+                .containsEntry("d은행", 4);
     }
 }
