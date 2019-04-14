@@ -1,2 +1,10 @@
-INSERT INTO institute (code, name) VALUES ('c1', '좋은 은행');
-INSERT INTO institute (code, name) VALUES ('c2', '나쁜 은행');
+INSERT INTO institute (code, name) VALUES ('c1', '주택도시기금');
+INSERT INTO institute (code, name) VALUES ('c2', '국민은행');
+INSERT INTO institute (code, name) VALUES ('c3', '우리은행');
+INSERT INTO institute (code, name) VALUES ('c4', '신한은행');
+INSERT INTO institute (code, name) VALUES ('c5', '한국시티은행');
+INSERT INTO institute (code, name) VALUES ('c6', '하나은행');
+INSERT INTO institute (code, name) VALUES ('c7', '농협은행');
+INSERT INTO institute (code, name) VALUES ('c8', '수협은행');
+INSERT INTO institute (code, name) VALUES ('c9', '외환은행');
+INSERT INTO institute (code, name) VALUES ('c10', '기타은행');
