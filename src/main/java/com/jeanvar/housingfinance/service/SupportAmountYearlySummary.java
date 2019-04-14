@@ -5,6 +5,8 @@ import lombok.Getter;
 import lombok.Setter;
 
 import java.time.Year;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 @Getter
@@ -12,4 +14,8 @@ import java.util.Map;
 public class SupportAmountYearlySummary {
     private Map<Year, Integer> yearlySum;
     private Map<Year, Map<Institute, Integer>> yearlySumPerInstitute;
+
+    public List<Year> years() {
+        return new ArrayList<>(yearlySum.keySet());
+    }
 }
