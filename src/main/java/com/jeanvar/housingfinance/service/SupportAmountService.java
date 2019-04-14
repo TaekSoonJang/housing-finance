@@ -5,6 +5,7 @@ import com.jeanvar.housingfinance.component.SupportAmountCSVReaderFactory;
 import com.jeanvar.housingfinance.core.Institute;
 import com.jeanvar.housingfinance.core.SupportAmount;
 import com.jeanvar.housingfinance.repository.SupportAmountRepository;
+import com.jeanvar.housingfinance.repository.YearAndInstitute;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -51,5 +52,9 @@ public class SupportAmountService {
         summary.setYearlySum(yearlySum);
 
         return summary;
+    }
+
+    public YearAndInstitute getHighestAmountOfYearAndInstitute() {
+        return supportAmountRepository.highestAmountYearAndInstitute();
     }
 }

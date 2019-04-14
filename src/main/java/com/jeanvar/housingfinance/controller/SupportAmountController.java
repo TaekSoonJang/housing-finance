@@ -2,6 +2,8 @@ package com.jeanvar.housingfinance.controller;
 
 import com.jeanvar.housingfinance.controller.response.SupportAmountSummaryResponse;
 import com.jeanvar.housingfinance.controller.response.SupportAmountYearySummaryResponse;
+import com.jeanvar.housingfinance.controller.response.TopAmountYearAndInstituteResponse;
+import com.jeanvar.housingfinance.repository.YearAndInstitute;
 import com.jeanvar.housingfinance.service.InsertSupportAmountInfo;
 import com.jeanvar.housingfinance.service.SupportAmountService;
 import com.jeanvar.housingfinance.service.SupportAmountYearlySummary;
@@ -75,6 +77,20 @@ public class SupportAmountController {
             .collect(Collectors.toList());
 
         res.setSupportAmount(yearlyRes);
+
+        return res;
+    }
+
+    @RequestMapping(
+        value = "/top-year-inst",
+        method = RequestMethod.GET
+    )
+    public TopAmountYearAndInstituteResponse topAmountYearAndInstituteResponse() {
+        YearAndInstitute yearAndInstitute = supportAmountService.getHighestAmountOfYearAndInstitute();
+
+        TopAmountYearAndInstituteResponse res = new TopAmountYearAndInstituteResponse();
+        res.setYear(yearAndInstitute.getYear().getValue());
+        res.setBank(yearAndInstitute.getInstituteName());
 
         return res;
     }
