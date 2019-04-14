@@ -36,7 +36,7 @@ class UserServiceImplTest {
 
     @Test
     void saveUser_notExists() {
-        when(authService.createJWT("uid")).thenReturn("jws");
+        when(authService.createToken("uid")).thenReturn("jws");
 
         UserDTO userDTO = UserDTO.create("uid", "pass");
         userDTO = userService.saveUser(userDTO);
@@ -71,7 +71,7 @@ class UserServiceImplTest {
         user.setPassword(userDTO.getEncryptedPassword());
 
         when(userRepository.findByUserId(userId)).thenReturn(Optional.of(user));
-        when(authService.createJWT(userId)).thenReturn("token");
+        when(authService.createToken(userId)).thenReturn("token");
 
         String jws = userService.checkUserAndReturnJWS(userDTO);
 

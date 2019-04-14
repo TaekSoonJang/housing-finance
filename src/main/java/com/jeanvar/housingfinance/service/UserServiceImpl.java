@@ -29,7 +29,7 @@ public class UserServiceImpl implements UserService {
 
         userRepository.save(user);
 
-        String jws = authService.createJWT(userDTO.getUserId());
+        String jws = authService.createToken(userDTO.getUserId());
         userDTO.setJws(jws);
 
         return userDTO;
@@ -41,6 +41,6 @@ public class UserServiceImpl implements UserService {
             .filter(u -> SecurityUtil.checkPassword(userDTO.getPlainPassword(), u.getPassword()))
             .orElseThrow(() -> new WrongUserException("Wrong user info."));
 
-        return authService.createJWT(user.getUserId());
+        return authService.createToken(user.getUserId());
     }
 }
