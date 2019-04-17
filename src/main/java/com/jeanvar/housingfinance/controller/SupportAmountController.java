@@ -5,7 +5,6 @@ import com.jeanvar.housingfinance.controller.response.SupportAmountSummaryRespon
 import com.jeanvar.housingfinance.controller.response.SupportAmountYearySummaryResponse;
 import com.jeanvar.housingfinance.controller.response.TopAmountYearAndInstituteResponse;
 import com.jeanvar.housingfinance.repository.HighLowSupportAmount;
-import com.jeanvar.housingfinance.repository.YearAndAmount;
 import com.jeanvar.housingfinance.repository.YearAndInstitute;
 import com.jeanvar.housingfinance.service.InsertSupportAmountInfo;
 import com.jeanvar.housingfinance.service.SupportAmountService;
@@ -21,7 +20,6 @@ import java.io.File;
 import java.io.IOException;
 import java.time.Instant;
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;

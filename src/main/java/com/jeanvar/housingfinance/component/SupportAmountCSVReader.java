@@ -2,6 +2,7 @@ package com.jeanvar.housingfinance.component;
 
 import com.jeanvar.housingfinance.core.Institute;
 import com.jeanvar.housingfinance.core.SupportAmount;
+import com.jeanvar.housingfinance.exception.ReadCSVDataException;
 import com.jeanvar.housingfinance.repository.InstituteRepository;
 import com.opencsv.CSVReader;
 import lombok.AccessLevel;
@@ -54,7 +55,7 @@ public class SupportAmountCSVReader {
         } catch (IOException e) {
             e.printStackTrace();
 
-            throw new RuntimeException(e);
+            throw new ReadCSVDataException(e);
         }
     }
 
@@ -106,7 +107,7 @@ public class SupportAmountCSVReader {
             } catch (IOException e) {
                 e.printStackTrace();
 
-                throw new RuntimeException(e);
+                throw new ReadCSVDataException(e);
             }
         }
 
@@ -116,7 +117,7 @@ public class SupportAmountCSVReader {
         } catch (IOException e) {
             e.printStackTrace();
 
-            throw new RuntimeException(e);
+            throw new ReadCSVDataException(e);
         }
 
         return ret;

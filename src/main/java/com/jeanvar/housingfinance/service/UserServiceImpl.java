@@ -18,7 +18,7 @@ public class UserServiceImpl implements UserService {
     @Transactional
     public UserDTO saveUser(UserDTO userDTO) {
         if (userRepository.existsByUserId(userDTO.getUserId())) {
-            throw new IllegalArgumentException(userDTO.getUserId() + " already exists.");
+            throw new WrongUserException(userDTO.getUserId() + " already exists.");
         }
 
         userDTO.generateEncryptedPassword();
